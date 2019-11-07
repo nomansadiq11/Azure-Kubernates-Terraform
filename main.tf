@@ -17,7 +17,7 @@ resource "azurerm_network_security_group" "test" {
   resource_group_name = "${azurerm_resource_group.test.name}"
 }
 
-resource "azurerm_ddos_protection_plan" "test" {
+resource "azurerm_network_ddos_protection_plan" "test" {
   name                = "ddospplan1"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
