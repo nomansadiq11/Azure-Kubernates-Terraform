@@ -11,13 +11,13 @@ resource "azurerm_resource_group" "PaymentFacade" {
 # Virtual Network PaymentSecVNET
 
 
-resource "azurerm_network_security_group" "test" {
+resource "azurerm_network_security_group" "acceptanceTestSecurityGroup1" {
   name                = "acceptanceTestSecurityGroup1"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
 }
 
-resource "azurerm_network_ddos_protection_plan" "test" {
+resource "azurerm_network_ddos_protection_plan" "ddospplan1" {
   name                = "ddospplan1"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
@@ -31,7 +31,7 @@ resource "azurerm_virtual_network" "test" {
   dns_servers         = ["10.0.0.4", "10.0.0.5"]
 
   ddos_protection_plan {
-    id     = "${azurerm_ddos_protection_plan.test.id}"
+    id     = "${azurerm_network_ddos_protection_plan.ddospplan1.id}"
     enable = true
   }
 
@@ -48,7 +48,7 @@ resource "azurerm_virtual_network" "test" {
   subnet {
     name           = "subnet3"
     address_prefix = "10.0.3.0/24"
-    security_group = "${azurerm_network_security_group.test.id}"
+    security_group = "${azurerm_network_security_group.acceptanceTestSecurityGroup1.id}"
   }
 
   tags = {
