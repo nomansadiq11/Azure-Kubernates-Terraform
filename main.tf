@@ -23,7 +23,7 @@ resource "azurerm_network_ddos_protection_plan" "ddospplan1" {
   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
 }
 
-resource "azurerm_virtual_network" "test" {
+resource "azurerm_virtual_network" "PaymentSecVNet_Dev" {
   name                = "PaymentSecVNet-Dev"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
@@ -58,7 +58,7 @@ resource "azurerm_virtual_network" "test" {
 
 # Virtual Network PaymentIngeVNET
 
-resource "azurerm_virtual_network" "test" {
+resource "azurerm_virtual_network" "PaymentIntegVNET_Dev" {
   name                = "PaymentIntegVNET-Dev"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
