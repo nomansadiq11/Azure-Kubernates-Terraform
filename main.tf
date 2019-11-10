@@ -106,7 +106,7 @@ resource "azurerm_storage_account" "SA_PaymentCollector" {
    tags = {
     environment = "${var.tag}"
   }
-  
+
 }
 
 resource "azurerm_app_service_plan" "ASP_PaymentCollector" {
@@ -126,10 +126,10 @@ resource "azurerm_app_service_plan" "ASP_PaymentCollector" {
 
 resource "azurerm_function_app" "AF_PaymentCollector" {
   name                      = "Paymentcollector"
-  location                  = "${azurerm_resource_group.test.location}"
-  resource_group_name       = "${azurerm_resource_group.test.name}"
-  app_service_plan_id       = "${azurerm_app_service_plan.test.id}"
-  storage_connection_string = "${azurerm_storage_account.test.primary_connection_string}"
+  location                  = "${var.location}"
+  resource_group_name       = "${azurerm_resource_group.PaymentFacade.name}"
+  app_service_plan_id       = "${azurerm_app_service_plan.ASP_PaymentCollector.id}"
+  storage_connection_string = "${azurerm_storage_account.SA_PaymentCollector.primary_connection_string}"
 
    tags = {
     environment = "${var.tag}"
