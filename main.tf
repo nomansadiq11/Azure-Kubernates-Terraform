@@ -96,8 +96,8 @@ resource "azurerm_virtual_network" "PaymentIntegVNET_Dev" {
 ## Auzre function to get the payment from Paypal 
 
 
-resource "azurerm_storage_account" "SA_PaymentCollector" {
-  name                     = "paymentcollector"
+resource "azurerm_storage_account" "SA_PaymentFacade" {
+  name                     = "paymentfacade"
   resource_group_name      = "${azurerm_resource_group.PaymentFacade.name}"
   location                 = "${var.location}"
   account_tier             = "Standard"
@@ -129,7 +129,7 @@ resource "azurerm_function_app" "AF_PaymentCollector" {
   location                  = "${var.location}"
   resource_group_name       = "${azurerm_resource_group.PaymentFacade.name}"
   app_service_plan_id       = "${azurerm_app_service_plan.ASP_PaymentCollector.id}"
-  storage_connection_string = "${azurerm_storage_account.SA_PaymentCollector.primary_connection_string}"
+  storage_connection_string = "${azurerm_storage_account.SA_PaymentFacade.primary_connection_string}"
 
    tags = {
     environment = "${var.tag}"
@@ -163,7 +163,7 @@ resource "azurerm_function_app" "AF_Paymentresponse" {
   location                  = "${var.location}"
   resource_group_name       = "${azurerm_resource_group.PaymentFacade.name}"
   app_service_plan_id       = "${azurerm_app_service_plan.ASP_PaymentResponse.id}"
-  storage_connection_string = "${azurerm_storage_account.SA_PaymentCollector.primary_connection_string}"
+  storage_connection_string = "${azurerm_storage_account.SA_PaymentFacade.primary_connection_string}"
 
    tags = {
     environment = "${var.tag}"
