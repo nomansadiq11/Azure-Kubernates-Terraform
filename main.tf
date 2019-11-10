@@ -138,3 +138,37 @@ resource "azurerm_function_app" "AF_PaymentCollector" {
 
 
 ## Auzre function to get the payment from Paypal 
+
+
+## Payment response update
+
+
+resource "azurerm_app_service_plan" "ASP_PaymentResponse" {
+  name                = "paymentresponse"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+
+  sku {
+    tier = "Standard"
+    size = "S1"
+  }
+
+   tags = {
+    environment = "${var.tag}"
+  }
+}
+
+resource "azurerm_function_app" "AF_Paymentresponse" {
+  name                      = "Paymentcresponse"
+  location                  = "${var.location}"
+  resource_group_name       = "${azurerm_resource_group.PaymentFacade.name}"
+  app_service_plan_id       = "${azurerm_app_service_plan.ASP_PaymentResponse.id}"
+  storage_connection_string = "${azurerm_storage_account.SA_PaymentCollector.primary_connection_string}"
+
+   tags = {
+    environment = "${var.tag}"
+  }
+}
+
+
+## Payment response update
