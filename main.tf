@@ -90,3 +90,51 @@ resource "azurerm_virtual_network" "PaymentIntegVNET_Dev" {
     environment = "${var.tag}"
   }
 }
+
+
+
+## Auzre function to get the payment from Paypal 
+
+
+resource "azurerm_storage_account" "SA_PaymentCollector" {
+  name                     = "paymentcollector"
+  resource_group_name      = "${azurerm_resource_group.PaymentFacade.name}"
+  location                 = "${var.location}"
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+
+   tags = {
+    environment = "${var.tag}"
+  }
+  
+}
+
+resource "azurerm_app_service_plan" "ASP_PaymentCollector" {
+  name                = "paymentcollector"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+
+  sku {
+    tier = "Standard"
+    size = "S1"
+  }
+
+   tags = {
+    environment = "${var.tag}"
+  }
+}
+
+resource "azurerm_function_app" "AF_PaymentCollector" {
+  name                      = "Paymentcollector"
+  location                  = "${azurerm_resource_group.test.location}"
+  resource_group_name       = "${azurerm_resource_group.test.name}"
+  app_service_plan_id       = "${azurerm_app_service_plan.test.id}"
+  storage_connection_string = "${azurerm_storage_account.test.primary_connection_string}"
+
+   tags = {
+    environment = "${var.tag}"
+  }
+}
+
+
+## Auzre function to get the payment from Paypal 
