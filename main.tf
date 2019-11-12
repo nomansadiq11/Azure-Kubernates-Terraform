@@ -185,7 +185,7 @@ resource "azurerm_cosmosdb_account" "db" {
   offer_type          = "Standard"
   kind                = "GlobalDocumentDB"
 
-  enable_automatic_failover = true
+  # enable_automatic_failover = true
 
   consistency_policy {
     consistency_level       = "BoundedStaleness"
@@ -193,16 +193,18 @@ resource "azurerm_cosmosdb_account" "db" {
     max_staleness_prefix    = 200
   }
 
-  geo_location {
-    location          = "${var.failover_location}"
-    failover_priority = 1
-  }
+  # geo_location {
+  #   location          = "${var.failover_location}"
+  #   failover_priority = 1
+  # }
 
-  geo_location {
-    prefix            = "paymentfacadedev-db-${random_integer.ri.result}-customid"
-    location          = "${var.location}"
-    failover_priority = 0
-  }
+  # geo_location {
+  #   prefix            = "paymentfacadedev-db-${random_integer.ri.result}-customid"
+  #   location          = "${var.location}"
+  #   failover_priority = 0
+  # }
+
+
 }
 
 
