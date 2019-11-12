@@ -193,10 +193,10 @@ resource "azurerm_cosmosdb_account" "db" {
     max_staleness_prefix    = 200
   }
 
-  # geo_location {
-  #   location          = "${var.failover_location}"
-  #   failover_priority = 1
-  # }
+  geo_location {
+    location          = "${var.failover_location}"
+    failover_priority = 1
+  }
 
   # geo_location {
   #   prefix            = "paymentfacadedev-db-${random_integer.ri.result}-customid"
