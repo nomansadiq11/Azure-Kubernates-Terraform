@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "PaymentFacade" {
-  name     = "PaymentFacade"
+  name     = "${var.resouce_group_name}"
   location = "${var.location}"
 
   tags = {
@@ -96,8 +96,8 @@ resource "azurerm_virtual_network" "PaymentIntegVNET_Dev" {
 ## Auzre function to get the payment from Paypal 
 
 
-resource "azurerm_storage_account" "SA_PaymentFacade" {
-  name                     = "paymentfacade"
+resource "azurerm_storage_account" "SA_PaymentFacadeDev" {
+  name                     = "paymentfacadedev"
   resource_group_name      = "${azurerm_resource_group.PaymentFacade.name}"
   location                 = "${var.location}"
   account_tier             = "Standard"
@@ -109,7 +109,7 @@ resource "azurerm_storage_account" "SA_PaymentFacade" {
 
 }
 
-resource "azurerm_app_service_plan" "ASP_PaymentCollector" {
+resource "azurerm_app_service_plan" "ASP_OsnCloudPaymentsProxy" {
   name                = "paymentcollector"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
@@ -124,7 +124,7 @@ resource "azurerm_app_service_plan" "ASP_PaymentCollector" {
   }
 }
 
-resource "azurerm_function_app" "AF_PaymentCollector" {
+resource "azurerm_function_app" "AF_OsnCloudPaymentsProxy" {
   name                      = "Paymentcollector"
   location                  = "${var.location}"
   resource_group_name       = "${azurerm_resource_group.PaymentFacade.name}"
@@ -143,32 +143,32 @@ resource "azurerm_function_app" "AF_PaymentCollector" {
 ## Payment response update
 
 
-resource "azurerm_app_service_plan" "ASP_PaymentResponse" {
-  name                = "paymentresponse"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+# resource "azurerm_app_service_plan" "ASP_PaymentResponse" {
+#   name                = "paymentresponse"
+#   location            = "${var.location}"
+#   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
 
-  sku {
-    tier = "Standard"
-    size = "S1"
-  }
+#   sku {
+#     tier = "Standard"
+#     size = "S1"
+#   }
 
-   tags = {
-    environment = "${var.tag}"
-  }
-}
+#    tags = {
+#     environment = "${var.tag}"
+#   }
+# }
 
-resource "azurerm_function_app" "AF_Paymentresponse" {
-  name                      = "Paymentcresponse"
-  location                  = "${var.location}"
-  resource_group_name       = "${azurerm_resource_group.PaymentFacade.name}"
-  app_service_plan_id       = "${azurerm_app_service_plan.ASP_PaymentResponse.id}"
-  storage_connection_string = "${azurerm_storage_account.SA_PaymentFacade.primary_connection_string}"
+# resource "azurerm_function_app" "AF_Paymentresponse" {
+#   name                      = "Paymentcresponse"
+#   location                  = "${var.location}"
+#   resource_group_name       = "${azurerm_resource_group.PaymentFacade.name}"
+#   app_service_plan_id       = "${azurerm_app_service_plan.ASP_PaymentResponse.id}"
+#   storage_connection_string = "${azurerm_storage_account.SA_PaymentFacade.primary_connection_string}"
 
-   tags = {
-    environment = "${var.tag}"
-  }
-}
+#    tags = {
+#     environment = "${var.tag}"
+#   }
+# }
 
 
 ## Payment response update
@@ -177,37 +177,37 @@ resource "azurerm_function_app" "AF_Paymentresponse" {
 ## Cosmos DB create account
 
 
-resource "random_integer" "ri" {
-  min = 10000
-  max = 99999
-}
+# resource "random_integer" "ri" {
+#   min = 10000
+#   max = 99999
+# }
 
-resource "azurerm_cosmosdb_account" "db" {
-  name                = "paymentfacade-${random_integer.ri.result}"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
-  offer_type          = "Standard"
-  kind                = "GlobalDocumentDB"
+# resource "azurerm_cosmosdb_account" "db" {
+#   name                = "paymentfacade-${random_integer.ri.result}"
+#   location            = "${var.location}"
+#   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+#   offer_type          = "Standard"
+#   kind                = "GlobalDocumentDB"
 
-  enable_automatic_failover = true
+#   enable_automatic_failover = true
 
-  consistency_policy {
-    consistency_level       = "BoundedStaleness"
-    max_interval_in_seconds = 10
-    max_staleness_prefix    = 200
-  }
+#   consistency_policy {
+#     consistency_level       = "BoundedStaleness"
+#     max_interval_in_seconds = 10
+#     max_staleness_prefix    = 200
+#   }
 
-  geo_location {
-    location          = "${var.failover_location}"
-    failover_priority = 1
-  }
+#   geo_location {
+#     location          = "${var.failover_location}"
+#     failover_priority = 1
+#   }
 
-  geo_location {
-    prefix            = "paymentfacade-db-${random_integer.ri.result}-customid"
-    location          = "${var.location}"
-    failover_priority = 0
-  }
-}
+#   geo_location {
+#     prefix            = "paymentfacade-db-${random_integer.ri.result}-customid"
+#     location          = "${var.location}"
+#     failover_priority = 0
+#   }
+# }
 
 
 ## Cosmos DB  create account

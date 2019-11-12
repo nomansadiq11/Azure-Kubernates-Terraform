@@ -11,3 +11,7 @@ variable "tag" {
 variable "failover_location" {
   default = "North Europe"
 }
+
+variable "resouce_group_name" {
+  default = "PaymentFacadeDev"
+}
