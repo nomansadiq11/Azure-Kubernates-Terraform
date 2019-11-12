@@ -143,32 +143,32 @@ resource "azurerm_function_app" "AF_OsnCloudPaymentsProxy" {
 ## Payment response update
 
 
-# resource "azurerm_app_service_plan" "ASP_PaymentResponse" {
-#   name                = "paymentresponse"
-#   location            = "${var.location}"
-#   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+resource "azurerm_app_service_plan" "ASP_OsnCloudPaymentsExternal" {
+  name                = "OsnCloudPaymentsExternal"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
 
-#   sku {
-#     tier = "Standard"
-#     size = "S1"
-#   }
+  sku {
+    tier = "Standard"
+    size = "S1"
+  }
 
-#    tags = {
-#     environment = "${var.tag}"
-#   }
-# }
+   tags = {
+    environment = "${var.tag}"
+  }
+}
 
-# resource "azurerm_function_app" "AF_Paymentresponse" {
-#   name                      = "Paymentcresponse"
-#   location                  = "${var.location}"
-#   resource_group_name       = "${azurerm_resource_group.PaymentFacade.name}"
-#   app_service_plan_id       = "${azurerm_app_service_plan.ASP_PaymentResponse.id}"
-#   storage_connection_string = "${azurerm_storage_account.SA_PaymentFacade.primary_connection_string}"
+resource "azurerm_function_app" "AF_OsnCloudPaymentsExternal" {
+  name                      = "OsnCloudPaymentsExternal"
+  location                  = "${var.location}"
+  resource_group_name       = "${azurerm_resource_group.PaymentFacade.name}"
+  app_service_plan_id       = "${azurerm_app_service_plan.ASP_OsnCloudPaymentsExternal.id}"
+  storage_connection_string = "${azurerm_storage_account.SA_PaymentFacadeDev.primary_connection_string}"
 
-#    tags = {
-#     environment = "${var.tag}"
-#   }
-# }
+   tags = {
+    environment = "${var.tag}"
+  }
+}
 
 
 ## Payment response update
