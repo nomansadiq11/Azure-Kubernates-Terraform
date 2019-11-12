@@ -186,9 +186,11 @@ resource "azurerm_cosmosdb_account" "db" {
   kind                = "GlobalDocumentDB"
 
   enable_automatic_failover = false
+  enable_Multiple_Write_Locations = false
+
 
   consistency_policy {
-    consistency_level       = "BoundedStaleness"
+    consistency_level       = "Session"
     max_interval_in_seconds = 10
     max_staleness_prefix    = 200
   }
