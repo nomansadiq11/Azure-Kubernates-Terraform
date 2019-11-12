@@ -177,37 +177,33 @@ resource "azurerm_function_app" "AF_OsnCloudPaymentsExternal" {
 ## Cosmos DB create account
 
 
-# resource "random_integer" "ri" {
-#   min = 10000
-#   max = 99999
-# }
 
-# resource "azurerm_cosmosdb_account" "db" {
-#   name                = "paymentfacade-${random_integer.ri.result}"
-#   location            = "${var.location}"
-#   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
-#   offer_type          = "Standard"
-#   kind                = "GlobalDocumentDB"
+resource "azurerm_cosmosdb_account" "db" {
+  name                = "paymentfacadedev-${random_integer.ri.result}"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+  offer_type          = "Standard"
+  kind                = "GlobalDocumentDB"
 
-#   enable_automatic_failover = true
+  enable_automatic_failover = true
 
-#   consistency_policy {
-#     consistency_level       = "BoundedStaleness"
-#     max_interval_in_seconds = 10
-#     max_staleness_prefix    = 200
-#   }
+  consistency_policy {
+    consistency_level       = "BoundedStaleness"
+    max_interval_in_seconds = 10
+    max_staleness_prefix    = 200
+  }
 
-#   geo_location {
-#     location          = "${var.failover_location}"
-#     failover_priority = 1
-#   }
+  geo_location {
+    location          = "${var.failover_location}"
+    failover_priority = 1
+  }
 
-#   geo_location {
-#     prefix            = "paymentfacade-db-${random_integer.ri.result}-customid"
-#     location          = "${var.location}"
-#     failover_priority = 0
-#   }
-# }
+  geo_location {
+    prefix            = "paymentfacadedev-db-${random_integer.ri.result}-customid"
+    location          = "${var.location}"
+    failover_priority = 0
+  }
+}
 
 
 ## Cosmos DB  create account

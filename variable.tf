@@ -15,3 +15,10 @@ variable "failover_location" {
 variable "resouce_group_name" {
   default = "PaymentFacadeDev"
 }
+
+
+
+resource "random_integer" "ri" {
+  min = 10000
+  max = 99999
+}
