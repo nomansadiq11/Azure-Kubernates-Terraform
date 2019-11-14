@@ -228,6 +228,24 @@ resource "azurerm_servicebus_namespace" "SBPaymentFacade" {
   }
 }
 
+resource "azurerm_servicebus_queue" "Q_Master_IN" {
+  name                = "Q.Master.IN"
+  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+  namespace_name      = "${azurerm_servicebus_namespace.SBPaymentFacade.name}"
+
+  enable_partitioning = true
+}
+
+
+resource "azurerm_servicebus_queue" "Q_Master_OUT" {
+  name                = "Q.Master.OUT"
+  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+  namespace_name      = "${azurerm_servicebus_namespace.SBPaymentFacade.name}"
+
+  enable_partitioning = true
+}
+
+
 resource "azurerm_servicebus_topic" "example" {
   name                = "tfex_sevicebus_topic"
   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
