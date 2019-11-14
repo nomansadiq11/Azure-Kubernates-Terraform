@@ -178,7 +178,7 @@ resource "azurerm_function_app" "AF_OsnCloudPaymentsExternal" {
 
 
 
-resource "azurerm_cosmosdb_account" "db" {
+resource "azurerm_cosmosdb_account" "paymentfacadedev" {
   name                = "paymentfacadedev-${random_integer.ri.result}"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
@@ -210,7 +210,30 @@ resource "azurerm_cosmosdb_account" "db" {
 }
 
 
+
 ## Cosmos DB  create account
 
 
 
+## Service BUS
+
+resource "azurerm_servicebus_namespace" "SB_PaymentFacade" {
+  name                = "SB_PaymentFacade"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+  sku                 = "Standard"
+
+  tags = {
+    source = "${var.tag}"
+  }
+}
+
+resource "azurerm_servicebus_topic" "example" {
+  name                = "tfex_sevicebus_topic"
+  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+  namespace_name      = "${azurerm_servicebus_namespace.SB_PaymentFacade.name}"
+
+  enable_partitioning = true
+}
+
+## Service BUs
