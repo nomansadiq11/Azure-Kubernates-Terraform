@@ -217,8 +217,8 @@ resource "azurerm_cosmosdb_account" "paymentfacadedev" {
 
 ## Service BUS
 
-resource "azurerm_servicebus_namespace" "SB_PaymentFacade" {
-  name                = "SB_PaymentFacade"
+resource "azurerm_servicebus_namespace" "SBPaymentFacade" {
+  name                = "SBPaymentFacade"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
   sku                 = "Standard"
@@ -231,7 +231,7 @@ resource "azurerm_servicebus_namespace" "SB_PaymentFacade" {
 resource "azurerm_servicebus_topic" "example" {
   name                = "tfex_sevicebus_topic"
   resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
-  namespace_name      = "${azurerm_servicebus_namespace.SB_PaymentFacade.name}"
+  namespace_name      = "${azurerm_servicebus_namespace.SBPaymentFacade.name}"
 
   enable_partitioning = true
 }
