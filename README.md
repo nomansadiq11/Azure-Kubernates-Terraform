@@ -9,5 +9,5 @@ This repo having all the details how to create kubernetes cluster over Azure usi
 | Variable      | Value | Description |
 | ------------- | ------------- | ------------- | 
 | resouce_group_name       | akscluster   | resouce group name |
-| tag | Dev/Stae  | Give tag name to resoues |
+| tag | Dev/Stage  | Give tag name to resoues |
 | location | West Europe  | Location where resouces will be created |
