@@ -1,4 +1,4 @@
-resource "azurerm_resource_group" "PaymentFacade" {
+resource "azurerm_resource_group" "akscluster" {
   name     = "${var.resouce_group_name}"
   location = "${var.location}"
 
@@ -14,19 +14,19 @@ resource "azurerm_resource_group" "PaymentFacade" {
 resource "azurerm_network_security_group" "acceptanceTestSecurityGroup1" {
   name                = "acceptanceTestSecurityGroup1"
   location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+  resource_group_name = "${azurerm_resource_group.akscluster.name}"
 }
 
 resource "azurerm_network_ddos_protection_plan" "ddospplan1" {
   name                = "ddospplan1"
   location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+  resource_group_name = "${azurerm_resource_group.akscluster.name}"
 }
 
 resource "azurerm_virtual_network" "PaymentSecVNet_Dev" {
   name                = "PaymentSecVNet-Dev"
   location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+  resource_group_name = "${azurerm_resource_group.akscluster.name}"
   address_space       = ["10.140.0.0/16"]
   dns_servers         = ["10.140.0.4", "10.140.0.5"]
 
@@ -61,7 +61,7 @@ resource "azurerm_virtual_network" "PaymentSecVNet_Dev" {
 resource "azurerm_virtual_network" "PaymentIntegVNET_Dev" {
   name                = "PaymentIntegVNET-Dev"
   location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+  resource_group_name = "${azurerm_resource_group.akscluster.name}"
   address_space       = ["10.141.0.0/16"]
   dns_servers         = ["10.141.0.4", "10.141.0.5"]
 
@@ -93,165 +93,77 @@ resource "azurerm_virtual_network" "PaymentIntegVNET_Dev" {
 
 
 
-## Auzre function to get the payment from Paypal 
 
 
-resource "azurerm_storage_account" "SA_PaymentFacadeDev" {
-  name                     = "paymentfacadedev"
-  resource_group_name      = "${azurerm_resource_group.PaymentFacade.name}"
-  location                 = "${var.location}"
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
 
-   tags = {
-    environment = "${var.tag}"
-  }
+# Start Kubernetes Cluster and ACR
 
-}
 
-resource "azurerm_app_service_plan" "ASP_OsnCloudPaymentsProxy" {
-  name                = "OsnCloudPaymentsProxy"
+resource "azurerm_container_registry" "acr" {
+  name                = "acrforaks"
+  resource_group_name = "${var.resouce_group_name}"
   location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
-
-  sku {
-    tier = "Standard"
-    size = "S1"
-  }
-
-   tags = {
-    environment = "${var.tag}"
-  }
+  sku                 = "basic"
+  admin_enabled       = false
 }
 
-resource "azurerm_function_app" "AF_OsnCloudPaymentsProxy" {
-  name                      = "OsnCloudPaymentsProxy"
-  location                  = "${var.location}"
-  resource_group_name       = "${azurerm_resource_group.PaymentFacade.name}"
-  app_service_plan_id       = "${azurerm_app_service_plan.ASP_OsnCloudPaymentsProxy.id}"
-  storage_connection_string = "${azurerm_storage_account.SA_PaymentFacadeDev.primary_connection_string}"
-
-   tags = {
-    environment = "${var.tag}"
-  }
-}
-
-
-## Auzre function to get the payment from Paypal 
-
-
-## Payment response update
-
-
-resource "azurerm_app_service_plan" "ASP_OsnCloudPaymentsExternal" {
-  name                = "OsnCloudPaymentsExternal"
+resource "azurerm_kubernetes_cluster" "aks_cluster" {
+  name                = "akscluster"
+  resource_group_name = "${azurerm_resource_group.akscluster.name}"
   location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+  dns_prefix          = "akscluster"
 
-  sku {
-    tier = "Standard"
-    size = "S1"
+  default_node_pool {
+    name            = "default"
+    node_count      = 3
+    vm_size         = "Standard_D2s_v3"
+    
   }
 
-   tags = {
-    environment = "${var.tag}"
-  }
-}
-
-resource "azurerm_function_app" "AF_OsnCloudPaymentsExternal" {
-  name                      = "OsnCloudPaymentsExternal"
-  location                  = "${var.location}"
-  resource_group_name       = "${azurerm_resource_group.PaymentFacade.name}"
-  app_service_plan_id       = "${azurerm_app_service_plan.ASP_OsnCloudPaymentsExternal.id}"
-  storage_connection_string = "${azurerm_storage_account.SA_PaymentFacadeDev.primary_connection_string}"
-
-   tags = {
-    environment = "${var.tag}"
-  }
-}
-
-
-## Payment response update
-
-
-## Cosmos DB create account
-
-
-
-resource "azurerm_cosmosdb_account" "paymentfacadedev" {
-  name                = "paymentfacadedev-${random_integer.ri.result}"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
-  offer_type          = "Standard"
-  kind                = "GlobalDocumentDB"
-
-  enable_automatic_failover = false
-  enable_multiple_write_locations = false
-
-
-  consistency_policy {
-    consistency_level       = "Session"
-    max_interval_in_seconds = 5
-    max_staleness_prefix    = 100
+  service_principal {
+    client_id     = "0000-0000-0000-000-0000"
+    client_secret = "000000000000000"
   }
 
-  geo_location {
-    location          = "${var.failover_location}"
-    failover_priority = 0
-  }
 
-  # geo_location {
-  #   prefix            = "paymentfacadedev-db-${random_integer.ri.result}-customid"
-  #   location          = "${var.location}"
-  #   failover_priority = 0
-  # }
-
-
-}
-
-
-
-## Cosmos DB  create account
-
-
-
-## Service BUS
-
-resource "azurerm_servicebus_namespace" "SBPaymentFacade" {
-  name                = "SBPaymentFacade"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
-  sku                 = "Standard"
 
   tags = {
-    source = "${var.tag}"
+    Environment = "stage"
   }
 }
 
-resource "azurerm_servicebus_queue" "Q_Master_IN" {
-  name                = "Q.Master.IN"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
-  namespace_name      = "${azurerm_servicebus_namespace.SBPaymentFacade.name}"
+output "client_certificate" {
+  value = "${azurerm_kubernetes_cluster.aks_cluster.kube_config.0.client_certificate}"
+}
 
-  enable_partitioning = true
+output "kube_config" {
+  value = "${azurerm_kubernetes_cluster.aks_cluster.kube_config_raw}"
+}
+
+output "ecr_id" {
+  value = "${azurerm_container_registry.acr.id}"
+}
+
+data "azurerm_client_config" "test" {}
+
+resource "azurerm_role_definition" "acs-assign-acr-role" {
+  name        = "assign-role-acr"
+  scope       = "${azurerm_container_registry.acr.id}"
+  description = "This is a custom role created via Terraform"
+
+  permissions {
+    actions     = ["*"]
+    not_actions = []
+  }
+
+  assignable_scopes = [
+    "${azurerm_container_registry.acr.id}", 
+  ]
 }
 
 
-resource "azurerm_servicebus_queue" "Q_Master_OUT" {
-  name                = "Q.Master.OUT"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
-  namespace_name      = "${azurerm_servicebus_namespace.SBPaymentFacade.name}"
 
-  enable_partitioning = true
-}
+# AKS End
 
 
-resource "azurerm_servicebus_topic" "example" {
-  name                = "tfex_sevicebus_topic"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
-  namespace_name      = "${azurerm_servicebus_namespace.SBPaymentFacade.name}"
-
-  enable_partitioning = true
-}
-
-## Service BUs
+## End Kubernetes Cluster and ACR 
