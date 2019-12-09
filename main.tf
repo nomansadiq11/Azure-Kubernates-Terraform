@@ -128,7 +128,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
 
 
   tags = {
-    Environment = "stage"
+    Environment = "${var.tag}"
   }
 }
 
