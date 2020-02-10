@@ -10,7 +10,7 @@ This repo having all the details how to create kubernetes cluster over Azure usi
 
 ### Note:
 
-Carefull using default_node_pool vs agent_node_pool
+Careful using default_node_pool vs agent_node_pool
 
 
 
