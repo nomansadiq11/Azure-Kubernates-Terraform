@@ -2,7 +2,7 @@
 
 This repo having all the details how to create kubernetes cluster over Azure using terraform. 
 
-## Private Networking 
+## Advance Networking 
 
 - We need to have Virtual Network and 1 Subnet to assign private network to containers
 - We need to add agent_node_pool and specfic the details of subnet in that
