@@ -15,10 +15,10 @@ resource "azurerm_log_analytics_workspace" "aks" {
 }
 resource "azurerm_log_analytics_solution" "aks-containerinsights" {
     solution_name         = "ContainerInsights"
-    location              = "${azurerm_log_analytics_workspace.akscluster.location}"
+    location              = "${azurerm_log_analytics_workspace.aks.location}"
     resource_group_name   = "${azurerm_resource_group.akscluster.name}"
-    workspace_resource_id = "${azurerm_log_analytics_workspace.akscluster.id}"
-    workspace_name        = "${azurerm_log_analytics_workspace.akscluster.name}"
+    workspace_resource_id = "${azurerm_log_analytics_workspace.aks.id}"
+    workspace_name        = "${azurerm_log_analytics_workspace.aks.name}"
 
     plan {
         publisher = "Microsoft"
