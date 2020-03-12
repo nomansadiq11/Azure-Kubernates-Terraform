@@ -14,8 +14,8 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   }
 
   service_principal {
-    client_id     = "0000-0000-0000-000-0000"
-    client_secret = "000000000000000"
+    client_id     = "clientid"
+    client_secret = "secretkey"
   }
 
 
