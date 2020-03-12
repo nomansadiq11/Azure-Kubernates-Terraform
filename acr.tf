@@ -1,6 +1,6 @@
 
 resource "azurerm_container_registry" "acr" {
-  name                = "acrforaks"
+  name                = "acspaymenttest"
   resource_group_name = "${var.resouce_group_name}"
   location            = "${var.location}"
   sku                 = "basic"
