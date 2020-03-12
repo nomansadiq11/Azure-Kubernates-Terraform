@@ -16,9 +16,9 @@ resource "azurerm_virtual_network" "aks-Dev" {
 
 resource "azurerm_subnet" "cluster" {
   name                  = "cluster-01"
-  resource_group_name   = "${azurerm_resource_group.aks.name}"
+  resource_group_name   = "${azurerm_resource_group.akscluster.name}"
   address_prefix        = "10.140.0.0/24"
-  virtual_network_name  = "${azurerm_virtual_network.akscluster-Dev.name}"
+  virtual_network_name  = "${azurerm_virtual_network.aks-Dev.name}"
   route_table_id        = "${azurerm_route_table.cluster-01.id}"
 }
 
