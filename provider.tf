@@ -1,9 +1,5 @@
+
 provider "azurerm" {
-  version = "~>1.33.1"
-}
-provider "azuread" {
-  version = "~>0.6.0"
-}
-terraform {
-    backend "azurerm" {}
+  # whilst the `version` attribute is optional, we recommend pinning to a given version of the Provider
+  version = "=1.38.0"
 }
