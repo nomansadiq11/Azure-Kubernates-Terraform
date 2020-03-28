@@ -1,11 +1,11 @@
-# resource "azurerm_resource_group" "akscluster" {
-#   name     = "${var.resouce_group_name}"
-#   location = "${var.location}"
+resource "azurerm_resource_group" "akscluster" {
+  name     = "${var.resouce_group_name}"
+  location = "${var.location}"
 
-#   tags = {
-#     environment = "${var.tag}"
-#   }
-# }
+  tags = {
+    environment = "${var.tag}"
+  }
+}
 
 
 # # Virtual Network PaymentSecVNET
