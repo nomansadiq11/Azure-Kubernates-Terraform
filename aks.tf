@@ -1,8 +1,8 @@
 
 resource "azurerm_log_analytics_workspace" "aksworkspace" {
   name                = "paymentfacadelaw"
-  location            = "${azurerm_resource_group.PaymentFacade.location}"
-  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+  location            = "${azurerm_resource_group.akscluster.location}"
+  resource_group_name = "${azurerm_resource_group.akscluster.name}"
   sku                 = "PerGB2018"
   retention_in_days   = 30
 }
