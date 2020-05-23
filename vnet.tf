@@ -23,7 +23,7 @@ resource "azurerm_subnet" "cluster" {
 }
 
 
-resource "azurerm_route_table" "cluster-01" {
+resource "azurerm_route_table" "cluster01" {
   name                = "${azurerm_resource_group.akscluster.name}-routetable"
   location            = "${azurerm_resource_group.akscluster.location}"
   resource_group_name = "${azurerm_resource_group.akscluster.name}"
@@ -37,5 +37,6 @@ resource "azurerm_route_table" "cluster-01" {
 }
 resource "azurerm_subnet_route_table_association" "cluster-01" {
   subnet_id      = "${azurerm_subnet.cluster.id}"
-  route_table_id = "${azurerm_route_table.cluster-01.id}"
+  route_table_id = "${azurerm_route_table.cluster01.id}"
 }
+

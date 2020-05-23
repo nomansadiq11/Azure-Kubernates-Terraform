@@ -1,4 +1,11 @@
 
+resource "azurerm_log_analytics_workspace" "aksworkspace" {
+  name                = "paymentfacadelaw"
+  location            = "${azurerm_resource_group.PaymentFacade.location}"
+  resource_group_name = "${azurerm_resource_group.PaymentFacade.name}"
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
+}
 
 resource "azurerm_kubernetes_cluster" "aks_cluster" {
   name                = "akscluster"
@@ -25,7 +32,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   addon_profile {
         oms_agent {
             enabled = true
-            log_analytics_workspace_id = "${azurerm_log_analytics_workspace.aks.id}"
+            log_analytics_workspace_id = "${azurerm_log_analytics_workspace.aksworkspace.id}"
         }
     }
 
